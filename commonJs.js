@@ -1,1 +1,118 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=1)}([,function(e,t){$(document).ready(function(){let e=window.location.pathname.split("/"),t=e[e.length-1];$("."+t).addClass("active");["news","events","teams","careers","newsDetail"].indexOf(t)>-1&&$(".aboutUs").addClass("active"),["caseStudies"].indexOf(t)>-1&&$(".experience").addClass("active");var n=2e3,r=1e3,o=70,i=document.getElementById("canvas");i.width=n,i.height=r;var a=i.getContext("2d");a.strokeStyle="rgba(0,0,0,0.02)",a.strokeWidth=1,a.fillStyle="rgba(0,0,0,0.05)";var s=[];function l(e,t,n,r,o){this.beginX=e,this.beginY=t,this.closeX=n,this.closeY=r,this.o=o}function u(e,t,n,r,o){this.x=e,this.y=t,this.r=n,this.moveX=r,this.moveY=o}function c(e,t){var n=arguments[1]||0;return Math.floor(Math.random()*(e-n+1)+n)}function f(e,t,n,r,o,i){var a=new u(t,n,r,o,i);return e.beginPath(),e.arc(a.x,a.y,a.r,0,2*Math.PI),e.closePath(),e.fill(),a}function d(){a.clearRect(0,0,i.width,i.height);for(var e=0;e<o;e++)f(a,s[e].x,s[e].y,s[e].r);for(e=0;e<o;e++)for(var t=0;t<o;t++)if(e+t<o){var n=Math.abs(s[e+t].x-s[e].x),r=Math.abs(s[e+t].y-s[e].y),u=1/Math.sqrt(n*n+r*r)*7-.009,c=u>.03?.03:u;c>0&&(d=a,v=s[e].x,h=s[e].y,y=s[e+t].x,b=s[e+t].y,g=void 0,g=new l(v,h,y,b,x=c),d.beginPath(),d.strokeStyle="rgba(0,0,0,"+x+")",d.moveTo(g.beginX,g.beginY),d.lineTo(g.closeX,g.closeY),d.closePath(),d.stroke())}var d,v,h,y,b,x,g}!function(){s=[];for(var e=0;e<o;e++)s.push(f(a,c(n),c(r),c(15,2),c(10,-10)/40,c(10,-10)/40));d()}(),setInterval(function(){for(var e=0;e<o;e++){var t=s[e];t.x+=t.moveX,t.y+=t.moveY,t.x>n?t.x=0:t.x<0&&(t.x=n),t.y>r?t.y=0:t.y<0&&(t.y=r)}d()},16)})}]);
+$(document).ready(function () {
+
+    //导航栏
+    let pathname = window.location.pathname;
+    let pathArr = pathname.split('/');
+    let keypath = pathArr[pathArr.length - 1]
+    $('.' + keypath).addClass('active');
+
+    let aboutUs = ['news', 'events', 'teams', 'careers', 'newsDetail'];
+    let experience = ['caseStudies'];
+
+    if (aboutUs.indexOf(keypath) > -1) {
+        $('.aboutUs').addClass('active');
+    }
+    if (experience.indexOf(keypath) > -1) {
+        $('.experience').addClass('active');
+    }
+
+
+    //背景
+    var WIDTH = 2000, HEIGHT = 1000, POINT = 70;
+    var canvas = document.getElementById('canvas');
+    canvas.width = WIDTH,
+        canvas.height = HEIGHT;
+    var context = canvas.getContext('2d');
+    context.strokeStyle = 'rgba(0,0,0,0.02)',
+        context.strokeWidth = 1,
+        context.fillStyle = 'rgba(0,0,0,0.05)';
+    var circleArr = [];
+
+    //线条：开始xy坐标，结束xy坐标，线条透明度
+    function Line(x, y, _x, _y, o) {
+        this.beginX = x,
+            this.beginY = y,
+            this.closeX = _x,
+            this.closeY = _y,
+            this.o = o;
+    }
+    //点：圆心xy坐标，半径，每帧移动xy的距离
+    function Circle(x, y, r, moveX, moveY) {
+        this.x = x,
+            this.y = y,
+            this.r = r,
+            this.moveX = moveX,
+            this.moveY = moveY;
+    }
+    //生成max和min之间的随机数
+    function num(max, _min) {
+        var min = arguments[1] || 0;
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    // 绘制原点
+    function drawCricle(cxt, x, y, r, moveX, moveY) {
+        var circle = new Circle(x, y, r, moveX, moveY)
+        cxt.beginPath()
+        cxt.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI)
+        cxt.closePath()
+        cxt.fill();
+        return circle;
+    }
+    //绘制线条
+    function drawLine(cxt, x, y, _x, _y, o) {
+        var line = new Line(x, y, _x, _y, o)
+        cxt.beginPath()
+        cxt.strokeStyle = 'rgba(0,0,0,' + o + ')'
+        cxt.moveTo(line.beginX, line.beginY)
+        cxt.lineTo(line.closeX, line.closeY)
+        cxt.closePath()
+        cxt.stroke();
+
+    }
+    //初始化生成原点
+    function init() {
+        circleArr = [];
+        for (var i = 0; i < POINT; i++) {
+            circleArr.push(drawCricle(context, num(WIDTH), num(HEIGHT), num(15, 2), num(10, -10) / 40, num(10, -10) / 40));
+        }
+        draw();
+    }
+
+    //每帧绘制
+    function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < POINT; i++) {
+            drawCricle(context, circleArr[i].x, circleArr[i].y, circleArr[i].r);
+        }
+        for (var i = 0; i < POINT; i++) {
+            for (var j = 0; j < POINT; j++) {
+                if (i + j < POINT) {
+                    var A = Math.abs(circleArr[i + j].x - circleArr[i].x),
+                        B = Math.abs(circleArr[i + j].y - circleArr[i].y);
+                    var lineLength = Math.sqrt(A * A + B * B);
+                    var C = 1 / lineLength * 7 - 0.009;
+                    var lineOpacity = C > 0.03 ? 0.03 : C;
+                    if (lineOpacity > 0) {
+                        drawLine(context, circleArr[i].x, circleArr[i].y, circleArr[i + j].x, circleArr[i + j].y, lineOpacity);
+                    }
+                }
+            }
+        }
+    }
+
+    //调用执行
+    init();
+    setInterval(function () {
+        for (var i = 0; i < POINT; i++) {
+            var cir = circleArr[i];
+            cir.x += cir.moveX;
+            cir.y += cir.moveY;
+            if (cir.x > WIDTH) cir.x = 0;
+            else if (cir.x < 0) cir.x = WIDTH;
+            if (cir.y > HEIGHT) cir.y = 0;
+            else if (cir.y < 0) cir.y = HEIGHT;
+        }
+        draw();
+    }, 16);
+
+})
