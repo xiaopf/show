@@ -3,7 +3,7 @@ $(document).ready(function () {
     //导航栏
     let pathname = window.location.pathname;
     let pathArr = pathname.split('/');
-    let keypath = pathArr[pathArr.length - 1]
+    let keypath = pathArr[pathArr.length - 2
     $('.' + keypath).addClass('active');
 
     let aboutUs = ['news', 'events', 'teams', 'careers', 'newsDetail'];
